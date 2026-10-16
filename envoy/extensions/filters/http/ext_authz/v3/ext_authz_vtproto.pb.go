@@ -669,6 +669,11 @@ func (m *HttpService) MarshalToSizedBufferVTStrict(dAtA []byte) (int, error) {
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
 	}
+	if len(m.MethodOverride) != 0 {
+		i = protohelpers.EncodeVarint(dAtA, i, uint64(len(m.MethodOverride)))
+		i--
+		dAtA[i] = 0x58
+	}
 	if len(m.PathOverride) > 0 {
 		i -= len(m.PathOverride)
 		copy(dAtA[i:], m.PathOverride)

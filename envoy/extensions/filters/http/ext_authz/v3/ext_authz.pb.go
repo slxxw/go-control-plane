@@ -874,7 +874,7 @@ func (x *BufferSettings) GetPackAsBytes() bool {
 // metadata as well as body may be added to the client's response. See :ref:`allowed_client_headers
 // <envoy_v3_api_field_extensions.filters.http.ext_authz.v3.AuthorizationResponse.allowed_client_headers>`
 // for details.
-// [#next-free-field: 11]
+// [#next-free-field: 12]
 type HttpService struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Sets the HTTP server URI which the authorization requests must be sent to.
@@ -885,6 +885,10 @@ type HttpService struct {
 	// Replaces the value of authorization request header “Path“ with this value.
 	// Only one of “path_prefix“ or “path_override“ may be set.
 	PathOverride string `protobuf:"bytes,10,opt,name=path_override,json=pathOverride,proto3" json:"path_override,omitempty"`
+	// Replaces the value of authorization request header “Method“ with this value.
+	// “method_override“ may be set.
+	// Unspecified method METHOD_UNSPECIFIED preserves the original request method
+	MethodOverride v3.RequestMethod `protobuf:"varint,11,opt,name=method_override,json=methodOverride,proto3,enum=envoy.core.v3.RequestMethod" json:"method_override,omitempty"`
 	// Settings used for controlling authorization request metadata.
 	AuthorizationRequest *AuthorizationRequest `protobuf:"bytes,7,opt,name=authorization_request,json=authorizationRequest,proto3" json:"authorization_request,omitempty"`
 	// Settings used for controlling authorization response metadata.
@@ -949,6 +953,13 @@ func (x *HttpService) GetPathOverride() string {
 		return x.PathOverride
 	}
 	return ""
+}
+
+func (x *HttpService) GetMethodOverride() v3.RequestMethod {
+	if x != nil {
+		return x.MethodOverride
+	}
+	return v3.RequestMethod_METHOD_UNSPECIFIED
 }
 
 func (x *HttpService) GetAuthorizationRequest() *AuthorizationRequest {
@@ -1447,14 +1458,15 @@ const file_envoy_extensions_filters_http_ext_authz_v3_ext_authz_proto_rawDesc = 
 	"\x11max_request_bytes\x18\x01 \x01(\rB\a\xfaB\x04*\x02 \x00R\x0fmaxRequestBytes\x122\n" +
 	"\x15allow_partial_message\x18\x02 \x01(\bR\x13allowPartialMessage\x12\"\n" +
 	"\rpack_as_bytes\x18\x03 \x01(\bR\vpackAsBytes:;\x9aň\x1e6\n" +
-	"4envoy.config.filter.http.ext_authz.v2.BufferSettings\"\x9a\x04\n" +
+	"4envoy.config.filter.http.ext_authz.v2.BufferSettings\"\xf6\x04\n" +
 	"\vHttpService\x12<\n" +
 	"\n" +
 	"server_uri\x18\x01 \x01(\v2\x1d.envoy.config.core.v3.HttpUriR\tserverUri\x12\x1f\n" +
 	"\vpath_prefix\x18\x02 \x01(\tR\n" +
 	"pathPrefix\x12#\n" +
 	"\rpath_override\x18\n" +
-	" \x01(\tR\fpathOverride\x12u\n" +
+	" \x01(\tR\fpathOverride\x12Z\n" +
+	"\x0fmethod_override\x18\v \x01(\x0e2#.envoy.config.core.v3.RequestMethodB\f\xfaB\t\x82\x01\x06\x18\x00\x18\x01\x18\x03R\x0emethodOverride\x12u\n" +
 	"\x15authorization_request\x18\a \x01(\v2@.envoy.extensions.filters.http.ext_authz.v3.AuthorizationRequestR\x14authorizationRequest\x12x\n" +
 	"\x16authorization_response\x18\b \x01(\v2A.envoy.extensions.filters.http.ext_authz.v3.AuthorizationResponseR\x15authorizationResponse\x12D\n" +
 	"\fretry_policy\x18\t \x01(\v2!.envoy.config.core.v3.RetryPolicyR\vretryPolicy:8\x9aň\x1e3\n" +
@@ -1525,7 +1537,8 @@ var file_envoy_extensions_filters_http_ext_authz_v3_ext_authz_proto_goTypes = []
 	(*structpb.Struct)(nil),             // 19: google.protobuf.Struct
 	(*v3.HeaderValue)(nil),              // 20: envoy.config.core.v3.HeaderValue
 	(*v3.HttpUri)(nil),                  // 21: envoy.config.core.v3.HttpUri
-	(*v3.RetryPolicy)(nil),              // 22: envoy.config.core.v3.RetryPolicy
+	(v3.RequestMethod)(0),               // 22: envoy.config.core.v3.RequestMethod
+	(*v3.RetryPolicy)(nil),              // 23: envoy.config.core.v3.RetryPolicy
 }
 var file_envoy_extensions_filters_http_ext_authz_v3_ext_authz_proto_depIdxs = []int32{
 	10, // 0: envoy.extensions.filters.http.ext_authz.v3.ExtAuthz.grpc_service:type_name -> envoy.config.core.v3.GrpcService
@@ -1545,26 +1558,27 @@ var file_envoy_extensions_filters_http_ext_authz_v3_ext_authz_proto_depIdxs = []
 	0,  // 14: envoy.extensions.filters.http.ext_authz.v3.ShadowDecision.check_result:type_name -> envoy.extensions.filters.http.ext_authz.v3.ShadowDecision.CheckResult
 	20, // 15: envoy.extensions.filters.http.ext_authz.v3.ShadowDecision.response_headers:type_name -> envoy.config.core.v3.HeaderValue
 	21, // 16: envoy.extensions.filters.http.ext_authz.v3.HttpService.server_uri:type_name -> envoy.config.core.v3.HttpUri
-	5,  // 17: envoy.extensions.filters.http.ext_authz.v3.HttpService.authorization_request:type_name -> envoy.extensions.filters.http.ext_authz.v3.AuthorizationRequest
-	6,  // 18: envoy.extensions.filters.http.ext_authz.v3.HttpService.authorization_response:type_name -> envoy.extensions.filters.http.ext_authz.v3.AuthorizationResponse
-	22, // 19: envoy.extensions.filters.http.ext_authz.v3.HttpService.retry_policy:type_name -> envoy.config.core.v3.RetryPolicy
-	16, // 20: envoy.extensions.filters.http.ext_authz.v3.AuthorizationRequest.allowed_headers:type_name -> envoy.type.matcher.v3.ListStringMatcher
-	20, // 21: envoy.extensions.filters.http.ext_authz.v3.AuthorizationRequest.headers_to_add:type_name -> envoy.config.core.v3.HeaderValue
-	16, // 22: envoy.extensions.filters.http.ext_authz.v3.AuthorizationResponse.allowed_upstream_headers:type_name -> envoy.type.matcher.v3.ListStringMatcher
-	16, // 23: envoy.extensions.filters.http.ext_authz.v3.AuthorizationResponse.allowed_upstream_headers_to_append:type_name -> envoy.type.matcher.v3.ListStringMatcher
-	16, // 24: envoy.extensions.filters.http.ext_authz.v3.AuthorizationResponse.allowed_client_headers:type_name -> envoy.type.matcher.v3.ListStringMatcher
-	16, // 25: envoy.extensions.filters.http.ext_authz.v3.AuthorizationResponse.allowed_client_headers_on_success:type_name -> envoy.type.matcher.v3.ListStringMatcher
-	16, // 26: envoy.extensions.filters.http.ext_authz.v3.AuthorizationResponse.dynamic_metadata_from_headers:type_name -> envoy.type.matcher.v3.ListStringMatcher
-	8,  // 27: envoy.extensions.filters.http.ext_authz.v3.ExtAuthzPerRoute.check_settings:type_name -> envoy.extensions.filters.http.ext_authz.v3.CheckSettings
-	9,  // 28: envoy.extensions.filters.http.ext_authz.v3.CheckSettings.context_extensions:type_name -> envoy.extensions.filters.http.ext_authz.v3.CheckSettings.ContextExtensionsEntry
-	3,  // 29: envoy.extensions.filters.http.ext_authz.v3.CheckSettings.with_request_body:type_name -> envoy.extensions.filters.http.ext_authz.v3.BufferSettings
-	10, // 30: envoy.extensions.filters.http.ext_authz.v3.CheckSettings.grpc_service:type_name -> envoy.config.core.v3.GrpcService
-	4,  // 31: envoy.extensions.filters.http.ext_authz.v3.CheckSettings.http_service:type_name -> envoy.extensions.filters.http.ext_authz.v3.HttpService
-	32, // [32:32] is the sub-list for method output_type
-	32, // [32:32] is the sub-list for method input_type
-	32, // [32:32] is the sub-list for extension type_name
-	32, // [32:32] is the sub-list for extension extendee
-	0,  // [0:32] is the sub-list for field type_name
+	22, // 17: envoy.extensions.filters.http.ext_authz.v3.HttpService.method_override:type_name -> envoy.config.core.v3.RequestMethod
+	5,  // 18: envoy.extensions.filters.http.ext_authz.v3.HttpService.authorization_request:type_name -> envoy.extensions.filters.http.ext_authz.v3.AuthorizationRequest
+	6,  // 19: envoy.extensions.filters.http.ext_authz.v3.HttpService.authorization_response:type_name -> envoy.extensions.filters.http.ext_authz.v3.AuthorizationResponse
+	23, // 20: envoy.extensions.filters.http.ext_authz.v3.HttpService.retry_policy:type_name -> envoy.config.core.v3.RetryPolicy
+	16, // 21: envoy.extensions.filters.http.ext_authz.v3.AuthorizationRequest.allowed_headers:type_name -> envoy.type.matcher.v3.ListStringMatcher
+	20, // 22: envoy.extensions.filters.http.ext_authz.v3.AuthorizationRequest.headers_to_add:type_name -> envoy.config.core.v3.HeaderValue
+	16, // 23: envoy.extensions.filters.http.ext_authz.v3.AuthorizationResponse.allowed_upstream_headers:type_name -> envoy.type.matcher.v3.ListStringMatcher
+	16, // 24: envoy.extensions.filters.http.ext_authz.v3.AuthorizationResponse.allowed_upstream_headers_to_append:type_name -> envoy.type.matcher.v3.ListStringMatcher
+	16, // 25: envoy.extensions.filters.http.ext_authz.v3.AuthorizationResponse.allowed_client_headers:type_name -> envoy.type.matcher.v3.ListStringMatcher
+	16, // 26: envoy.extensions.filters.http.ext_authz.v3.AuthorizationResponse.allowed_client_headers_on_success:type_name -> envoy.type.matcher.v3.ListStringMatcher
+	16, // 27: envoy.extensions.filters.http.ext_authz.v3.AuthorizationResponse.dynamic_metadata_from_headers:type_name -> envoy.type.matcher.v3.ListStringMatcher
+	8,  // 28: envoy.extensions.filters.http.ext_authz.v3.ExtAuthzPerRoute.check_settings:type_name -> envoy.extensions.filters.http.ext_authz.v3.CheckSettings
+	9,  // 29: envoy.extensions.filters.http.ext_authz.v3.CheckSettings.context_extensions:type_name -> envoy.extensions.filters.http.ext_authz.v3.CheckSettings.ContextExtensionsEntry
+	3,  // 30: envoy.extensions.filters.http.ext_authz.v3.CheckSettings.with_request_body:type_name -> envoy.extensions.filters.http.ext_authz.v3.BufferSettings
+	10, // 31: envoy.extensions.filters.http.ext_authz.v3.CheckSettings.grpc_service:type_name -> envoy.config.core.v3.GrpcService
+	4,  // 32: envoy.extensions.filters.http.ext_authz.v3.CheckSettings.http_service:type_name -> envoy.extensions.filters.http.ext_authz.v3.HttpService
+	32, // [33:33] is the sub-list for method output_type
+	32, // [33:33] is the sub-list for method input_type
+	32, // [33:33] is the sub-list for extension type_name
+	32, // [33:33] is the sub-list for extension extendee
+	0,  // [0:33] is the sub-list for field type_name
 }
 
 func init() { file_envoy_extensions_filters_http_ext_authz_v3_ext_authz_proto_init() }

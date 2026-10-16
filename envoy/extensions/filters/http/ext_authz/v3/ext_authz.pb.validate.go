@@ -38,6 +38,7 @@ var (
 	_ = sort.Sort
 
 	_ = v3.ApiVersion(0)
+	_ = v3.RequestMethod(0)
 )
 
 // Validate checks the field values on ExtAuthz with the rules defined in the
@@ -902,7 +903,20 @@ func (m *HttpService) validate(all bool) error {
 	// no validation rules for PathPrefix
 
 	// no validation rules for PathOverride
+	switch m.GetMethodOverride() {
+	case v3.RequestMethod_METHOD_UNSPECIFIED, v3.RequestMethod_GET, v3.RequestMethod_POST: // in: [0, 1, 3]
+	default:
+		err := HttpServiceValidationError{
+			field: "MethodOverride",
+			reason: "value must be in list [METHOD_UNSPECIFIED GET POST]",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
 
+	}
+	
 	if all {
 		switch v := interface{}(m.GetAuthorizationRequest()).(type) {
 		case interface{ ValidateAll() error }:
